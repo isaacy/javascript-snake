@@ -10,7 +10,34 @@
   "license": "ISC",
   "devDependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "eslint": "^5.0.1",
     "inline-css": "^2.4.0",
+    "jest": "^23.2.0",
     "jest-style-matchers": "^0.1.1"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "env": {
+      "browser": true,
+      "node": true,
+      "shared-node-browser": true,
+      "jquery": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "no-console": "off",
+      "semi": [
+        "off",
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "camelcase": [
+        "error"
+      ]
+    }
   }
 }

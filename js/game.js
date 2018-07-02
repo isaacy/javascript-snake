@@ -22,9 +22,14 @@ window.onload = function () {
     markCount = document.getElementById('score');
     interval = setInterval(move, 100);
     document.onkeydown = function (event) {
-        var event = event || window.event;
-        keydown(event.keyCode);
+        var aEvent = event || window.event;
+        keydown(aEvent.keyCode);
     }
+
+    var canvas = document.getElementsByTagName('canvas')[0];
+    canvas.width  = 800;
+    canvas.height = 600;
+    
     start();
 }
 
@@ -34,7 +39,7 @@ function draw() {
     grid.clearRect(0, 0, BLOCK_SIZE * COLS, BLOCK_SIZE * ROWS);
 
     // Draw the rows
-    for (var i = 1; i <= ROWS; i++) {
+    for (let i = 1; i <= ROWS; i++) {
         grid.beginPath();
         grid.moveTo(0, i * BLOCK_SIZE);
         grid.lineTo(BLOCK_SIZE * COLS, i * BLOCK_SIZE);
@@ -43,7 +48,7 @@ function draw() {
     }
 
     // Draw the columns
-    for (var i = 1; i <= COLS; i++) {
+    for (let i = 1; i <= COLS; i++) {
         grid.beginPath();
         grid.moveTo(i * BLOCK_SIZE, 0);
         grid.lineTo(i * BLOCK_SIZE, BLOCK_SIZE * ROWS);
@@ -51,7 +56,7 @@ function draw() {
     }
 
     // Draw a snack
-    for (var i = 0; i < snake.length; i++) {
+    for (let i = 0; i < snake.length; i++) {
         grid.beginPath();
         grid.fillStyle = "blue";
         grid.fillRect(snake[i].x, snake[i].y, BLOCK_SIZE, BLOCK_SIZE);
@@ -100,7 +105,8 @@ function move() {
         case 4:
             snake.push({ x: snake[bodyCount - 1].x, y: snake[bodyCount - 1].y + BLOCK_SIZE });
             break;
-        default: ;
+        default:
+
     }
     snake.shift();
     isEat();
