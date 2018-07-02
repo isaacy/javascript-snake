@@ -16,20 +16,32 @@ var interval = 0;
 var markCount = 0;
 var isPause = false;
 
+var startTime;
+var playAgain = false;
+
+var speed = 100; // larger the number, slower is the screen
+
 // Start the game //
 window.onload = function () {
     grid = document.getElementById('canvas').getContext('2d');
-    markCount = document.getElementById('score');
-    interval = setInterval(move, 100);
     document.onkeydown = function (event) {
         var aEvent = event || window.event;
         keydown(aEvent.keyCode);
     }
-
+    
     var canvas = document.getElementsByTagName('canvas')[0];
     canvas.width  = 800;
     canvas.height = 600;
-    
+
+    $('#gameOverModal').on('hidden.bs.modal', function (e) {
+        if (playAgain) {
+            snake = [];
+            bodyCount = 2;
+            toGo = 3;
+            start();
+        }
+    })
+
     start();
 }
 
@@ -83,11 +95,23 @@ function draw() {
 
 //Begin a game
 function start() {
+    
+    
+    markCount = document.getElementById('score');
+    markCount.innerHTML = 0;
+    playAgain=false;
     for (var i = 0; i < bodyCount; i++) {
         snake[i] = { x: i * BLOCK_SIZE, y: 0 };
     }
+
+    interval = setInterval(move, speed);
+    startTime = new Date();
+    let timer = document.getElementById('displayMoment');
+    timer.innerHTML = moment().diff(startTime);
+
+
+    
     addFood();  
-    markCount.innerHTML = 0;
 }
 // -------------------- Movement -------------------------//
 // Controller //
@@ -112,6 +136,9 @@ function move() {
     isEat();
     isDie();
     draw();
+
+    let timer = document.getElementById('displayMoment');
+    timer.innerHTML = Math.round((moment().diff(startTime))/1000) + " seconds has elapsed.";
 }
 
 // Press the button on keyboard //
@@ -127,7 +154,7 @@ function keydown(keyCode) {
             if (toGo != 4 && toGo != 2) toGo = 4; break;
         case 80: // Start & Pause
             if (isPause) {
-                interval = setInterval(move, 200);
+                interval = setInterval(move, speed);
                 isPause = false;
                 document.getElementById('pause').innerHTML = "Pause";
             } else {
@@ -163,13 +190,32 @@ function addFood() {
 function isDie() {
     if (snake[bodyCount - 1].x == -20 || snake[bodyCount - 1].x == BLOCK_SIZE * COLS
         || snake[bodyCount - 1].y == -20 || snake[bodyCount - 1].y == BLOCK_SIZE * ROWS) {
-        alert("Game Over!");
+        //alert("Game Over!");
         clearInterval(interval);
+        playAgain = false;
+        $('#gameOverModal').modal({
+            keyboard: false
+        });
     }
     for (var i = 0; i < bodyCount - 1; i++) {
         if (snake[bodyCount - 1].x == snake[i].x && snake[bodyCount - 1].y == snake[i].y) {
             clearInterval(interval);
-            alert("Game Over!");
+            playAgain = false;
+            $('#gameOverModal').modal({
+                keyboard: false
+              });
+            //alert("Game Over!");
         }
     }
+}
+
+function chooseToPlay() {
+    playAgain = true;
+    $('#gameOverModal').modal('hide');
+}
+
+function updateSpeed(value) {
+    clearInterval(interval);
+    speed = 300 / value;
+    interval = setInterval(move, speed);
 }
